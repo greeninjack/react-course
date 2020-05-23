@@ -5,33 +5,40 @@ import Person from './Person/Person';
 class App extends Component {
   state = {
     persons: [
-      { id: 'sdasd', name: 'Max', age: 28 },
-      { id: 'dfdas', name: 'Manu', age: 29 },
-      { id: 'fhjda', name: 'Stephanie', age: 26 }
+      { id: 'asfa1', name: 'Max', age: 28 },
+      { id: 'vasdf1', name: 'Manu', age: 29 },
+      { id: 'asdf11', name: 'Stephanie', age: 26 }
     ],
     otherState: 'some other value',
     showPersons: false
   }
 
+  nameChangedHandler = ( event, id ) => {
+    const personIndex = this.state.persons.findIndex(p => {
+      return p.id === id;
+    });
 
-  nameChangedHandler = ( event ) => {
-    this.setState( {
-      persons: [
-        { name: 'Max', age: 28 },
-        { name: event.target.value, age: 29 },
-        { name: 'Stephanie', age: 26 }
-      ]
-    } )
+    const person = {
+      ...this.state.persons[personIndex]
+    };
+
+    // const person = Object.assign({}, this.state.persons[personIndex]);
+
+    person.name = event.target.value;
+
+    const persons = [...this.state.persons];
+    persons[personIndex] = person;
+
+    this.setState( {persons: persons} );
   }
-//we set the state of the persons to the new persons, the updated persons and this approach has a flaw. The flaw of this approach is that in javascript, objects and arrays are reference types,
+
   deletePersonHandler = (personIndex) => {
-    //const persons = this.state.persons.slice();
+    // const persons = this.state.persons.slice();
     const persons = [...this.state.persons];
     persons.splice(personIndex, 1);
-    this.setState({persons: persons})
-
+    this.setState({persons: persons});
   }
-  
+
   togglePersonsHandler = () => {
     const doesShow = this.state.showPersons;
     this.setState( { showPersons: !doesShow } );
@@ -47,17 +54,17 @@ class App extends Component {
     };
 
     let persons = null;
-    //You can do if where because you are inside the JS, not JSX
+
     if ( this.state.showPersons ) {
       persons = (
         <div>
           {this.state.persons.map((person, index) => {
-            return <Person 
-            click={() => this.deletePersonHandler(index)}
-            name={person.name} 
-            age ={person.age}
-            key={person.id}// You should assign something unique, would generally be an id from the DB
-            />
+            return <Person
+              click={() => this.deletePersonHandler(index)}
+              name={person.name} 
+              age={person.age}
+              key={person.id}
+              changed={(event) => this.nameChangedHandler(event, person.id)} />
           })}
         </div>
       );
@@ -73,6 +80,7 @@ class App extends Component {
         {persons}
       </div>
     );
+    // return React.createElement('div', {className: 'App'}, React.createElement('h1', null, 'Does this work now?'));
   }
 }
 
