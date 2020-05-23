@@ -1,8 +1,42 @@
 import React, { Component } from 'react';
 import './App.css';
+import Validation from './Validation/Validation'
+import Char from './Char/Char'
+
 
 class App extends Component {
+
+  state = {
+    userInput: ''
+  }
+
+  //change listener which outputs the length of the entered text below it 
+  inputChangedHandler = (event) => {
+    //setState is how you update a state (property of a class) with merge
+    this.setState({ userInput: event.target.value });
+  }
+
+  deleteCharHandler = (index) => {
+    //I will first of all get my text by reaching out to this state. User input and coaling split on an empty string just as we did before. Before mapping.
+    const text = this.state.userInput.split('');
+    //Now I got an array of characters and there I now want to remove one with splice at the index position and then only one character. So this removes it from the array:
+    text.splice(index, 1);
+    //And now I want to create my update as text where I simply used the text. which I now join again with an empty characters so with basically nothing.
+    const updatedText = text.join('');
+    this.setState({ userInput: updatedText });
+  }
+
   render() {
+    //before
+    //let charList = this.state.userInput.localeCompare(ch => {
+    //Keep in mind map doesn't touch the original array. It simply gives you a new array which is stored in char list and you array of char components.
+    const charList = this.state.userInput.split('').map((ch, index) => {
+      return <Char
+        character={ch}
+        key={index}
+        clicked={() => this.deleteCharHandler(index)}
+      />;
+    });
     return (
       <div className="App">
         <ol>
@@ -14,9 +48,21 @@ class App extends Component {
           <li>When you click a CharComponent, it should be removed from the entered text.</li>
         </ol>
         <p>Hint: Keep in mind that JavaScript strings are basically arrays!</p>
+        <hr />
+        <input
+          type='text'
+          onChange={this.inputChangedHandler}
+          value={this.state.userInput}
+        />
+        <p>{this.state.userInput}</p>
+        <Validation
+          inputLength={this.state.userInput.length}
+        />
+        {charList}
       </div>
     );
   }
 }
+
 
 export default App;
