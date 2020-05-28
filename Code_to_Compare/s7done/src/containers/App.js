@@ -1,18 +1,15 @@
 import React, { Component } from 'react';
-import withClass from '../hoc/withClass';
-// withClass with lower case Because we'll not use this as a component anymore
-import classes from './App.module.css';
+
+import classes from './App.css';
 import Persons from '../components/Persons/Persons';
 import Cockpit from '../components/Cockpit/Cockpit';
+import withClass from '../hoc/withClass';
 import Aux from '../hoc/Aux';
 import AuthContext from '../context/auth-context';
 
-
-
 class App extends Component {
-
   constructor(props) {
-    super(props); //will execute the constructor of the class that you are extending
+    super(props);
     console.log('[App.js] constructor');
   }
 
@@ -25,15 +22,15 @@ class App extends Component {
     otherState: 'some other value',
     showPersons: false,
     showCockpit: true,
+    changeCounter: 0,
+    authenticated: false
   };
-
 
   static getDerivedStateFromProps(props, state) {
     console.log('[App.js] getDerivedStateFromProps', props);
     return state;
   }
 
-  //old component not in use
   // componentWillMount() {
   //   console.log('[App.js] componentWillMount');
   // }
@@ -87,6 +84,10 @@ class App extends Component {
     this.setState({ showPersons: !doesShow });
   };
 
+  loginHandler = () => {
+    this.setState({ authenticated: true });
+  };
+
   render() {
     console.log('[App.js] render');
     let persons = null;
@@ -97,13 +98,14 @@ class App extends Component {
           persons={this.state.persons}
           clicked={this.deletePersonHandler}
           changed={this.nameChangedHandler}
+          isAuthenticated={this.state.authenticated}
         />
       );
     }
 
     return (
       <Aux>
-                <button
+        <button
           onClick={() => {
             this.setState({ showCockpit: false });
           }}
@@ -111,27 +113,21 @@ class App extends Component {
           Remove Cockpit
         </button>
         <AuthContext.Provider
-        //so we'll still manage the authentication status in my state of this component because one thing does not change when you use context, React will re-render when state or props change. So only changing something in a context object would not cause a re-render cycle and therefore this is not enough.
-          value={{//outer curly braces are there to enter dynamic content, inner curly braces construct Javascript object
+          value={{
             authenticated: this.state.authenticated,
             login: this.loginHandler
-            //Now this is in my context object that can now be accessed from cockpit and persons because they are inside of the provider wrapper.
           }}
         >
-
-        {this.state.showCockpit ? (
-          <Cockpit
-            title={this.props.appTitle}
-            showPersons={this.state.showPersons}
-            personsLength={this.state.persons.length}
-            clicked={this.togglePersonsHandler}
-          />
-        ) : null}
-        {persons}
-        {/* So now inside of the cockpit and of persons, we'll be able to interact with our context and also in the app.js file because here I'm setting up this provider component. */}
+          {this.state.showCockpit ? (
+            <Cockpit
+              title={this.props.appTitle}
+              showPersons={this.state.showPersons}
+              personsLength={this.state.persons.length}
+              clicked={this.togglePersonsHandler}
+            />
+          ) : null}
+          {persons}
         </AuthContext.Provider>
-
-
       </Aux>
     );
     // return React.createElement('div', {className: 'App'}, React.createElement('h1', null, 'Does this work now?'));
@@ -139,4 +135,3 @@ class App extends Component {
 }
 
 export default withClass(App, classes.App);
-//classes referring to our CS modules classes.

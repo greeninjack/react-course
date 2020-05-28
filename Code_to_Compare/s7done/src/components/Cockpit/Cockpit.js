@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useContext } from 'react';
-import classes from './Cockpit.module.css';
-import AuthContext from '../../context/auth-context';
 
+import classes from './Cockpit.css';
+import AuthContext from '../../context/auth-context';
 
 const Cockpit = props => {
   const toggleBtnRef = useRef(null);
@@ -16,15 +16,10 @@ const Cockpit = props => {
     //   alert('Saved data to cloud!');
     // }, 1000);
     toggleBtnRef.current.click();
-    // If you're using hooks like we're doing in the cockpit.js file, then you also can use useEffect for this cleanup work.
-    // It runs BEFORE the main useEffect function, but AFTER the (first) render cycle.
     return () => {
       console.log('[Cockpit.js] cleanup work in useEffect');
     };
   }, []);
-  //if we now only want to execute this when the component renders the first time (it runs only the first time)
-  //that second argument is an array where you simply point at all the variables or all the data that actually are used in your effect.
-  //This tells React this effect has no dependencies and it should rerun whenever one of the dependencies changes.
 
   useEffect(() => {
     console.log('[Cockpit.js] 2nd useEffect');
@@ -34,8 +29,6 @@ const Cockpit = props => {
   });
 
   // useEffect();
-
-
 
   const assignedClasses = [];
   let btnClass = '';
@@ -57,13 +50,9 @@ const Cockpit = props => {
       <button ref={toggleBtnRef} className={btnClass} onClick={props.clicked}>
         Toggle Persons
       </button>
-      {/* <AuthContext.Consumer>
-      {(context) => <button onClick={context.login}>Log in</button>}
-      </AuthContext.Consumer> */}
       <button onClick={authContext.login}>Log in</button>
     </div>
   );
 };
 
-//export default Cockpit;
 export default React.memo(Cockpit);
