@@ -27,7 +27,7 @@ class App extends Component {
           <User />
         )}
       </React.Fragment>
-      // <BrowserRouter>
+      // <BrowserRouter basename ='/my-app'/>
       //   <React.Fragment>
       //     <nav>
       //       <NavLink to="/user">User Page</NavLink> |&nbsp;
